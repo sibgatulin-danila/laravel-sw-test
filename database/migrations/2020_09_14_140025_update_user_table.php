@@ -35,6 +35,18 @@ class UpdateUserTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('users', function(Blueprint $table) {
+            $table->dropColumn('refresh_token');
+            
+            // students
+            $table->dropColumn('school_id');
+            $table->dropColumn('class');
+            $table->dropColumn('class_symbol');
+            $table->dropColumn('enrollment_date');
+
+            // employee
+            $table->dropColumn('dismissal_date');
+            $table->dropColumn('hire_date');
+        });
     }
 }
