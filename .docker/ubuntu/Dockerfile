@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     php7.3-gd \
     php7.3-ldap \
     php7.3-mbstring \
-    php7.3-mysql \
+    php7.3-pgsql \
     php7.3-soap \
     php7.3-sqlite3 \
     php7.3-xml \
