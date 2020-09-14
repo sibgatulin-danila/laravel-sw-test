@@ -24,10 +24,11 @@ class User extends Authenticatable
 
         // students attributes
         'school_id',
-        
     ];
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 
+        'remember_token', 
+        'refresh_token',
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
