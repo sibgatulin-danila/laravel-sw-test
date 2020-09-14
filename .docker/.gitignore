@@ -1,0 +1,4 @@
+mysql/data
+.env
+scripts/docker-compose-*
+!scripts/docker-compose-app.service.example
