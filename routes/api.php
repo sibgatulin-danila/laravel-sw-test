@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::get('', [UserController::class, 'index']);
     Route::post('create', [UserController::class, 'create']);
+    
+    Route::post('login', [UserController::class, 'login']);
 
     Route::prefix('{obUser}')->group(function () {
         Route::get('', [UserController::class, 'get']);
@@ -20,6 +22,4 @@ Route::prefix('user')->group(function () {
         Route::post('delete', [UserController::class, 'delete']);
         Route::post('update', [UserController::class, 'update']);
     });
-
-    // Route::post('/login', [UserController::class, 'login']);
 });

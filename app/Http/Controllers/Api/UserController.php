@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Generator as HelpersGenerator;
 use App\Helpers\Response;
+
 use App\Models\User;
+
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Hash;
 
 class UserController
 {
@@ -68,15 +73,36 @@ class UserController
         return Response::success(['item' => $obUser]);
     }
 
-    // public function login(Request $obRequest)
-    // {
-    //     $obRequest->validate([
-    //         'email' => 'required|email',
-    //         'password' => 'required',
-    //     ]);
+    public function login(Request $obRequest)
+    {
+        $obRequest->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
-    //     $arCredentials = $obRequest->only(['email', 'password']);
+        $sEmail    = $obRequest->input('email');
+        $sPassword = $obRequest->input('password');
 
+        $obUser = User::where([
+                ['email', '=', $sEmail],
+            ])->first();
 
-    // }
+        if (!Hash::check($sPassword, $obUser->password)) {
+            return Response::error(403, 'Login failed');
+        }
+
+        $sRefreshToken = HelpersGenerator::refreshToken($obUser);
+        $sAccessToken  = HelpersGenerator::accessToken($obUser);
+
+        $obUser->remember_token = $sAccessToken;
+        $obUser->refresh_token  = $sRefreshToken;
+        $obUser->save();
+
+        return Response::success([
+            'token_type' => 'bearer',
+            'refresh_token' => $sRefreshToken,
+            'access_token' => $sAccessToken,
+            'access_token_expire' => time() + 60*60*24,
+        ]);
+    }
 }
