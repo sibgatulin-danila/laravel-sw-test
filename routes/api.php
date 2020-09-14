@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::get('', [UserController::class, 'index']);
     Route::post('create', [UserController::class, 'create']);
-    
+
     Route::post('login', [UserController::class, 'login']);
+    Route::post('refresh', [UserController::class, 'refresh']);
 
     Route::prefix('{obUser}')->group(function () {
         Route::get('', [UserController::class, 'get'])->middleware('auth.check');

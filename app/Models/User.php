@@ -24,6 +24,7 @@ class User extends Authenticatable
 
         // students attributes
         'school_id',
+        'remember_token_expire_date',
     ];
     protected $hidden = [
         'password', 

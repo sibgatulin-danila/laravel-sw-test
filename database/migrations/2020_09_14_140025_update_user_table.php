@@ -14,7 +14,11 @@ class UpdateUserTable extends Migration
     public function up()
     {
         Schema::table('users', function(Blueprint $table) {
+            $table->string('name')->nullable()->change();
+            $table->string('role_id')->nullable()->change();
+
             $table->string('refresh_token')->nullable();
+            $table->timestamp('remember_token_expire_date')->nullable();
             
             // students
             $table->bigInteger('school_id')->nullable();
@@ -37,6 +41,7 @@ class UpdateUserTable extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('refresh_token');
+            $table->dropColumn('remember_token_expire_date');
             
             // students
             $table->dropColumn('school_id');
