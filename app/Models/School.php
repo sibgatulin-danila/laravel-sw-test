@@ -20,7 +20,7 @@ class School extends Model
     protected $casts = [
     ];
 
-    public function classes()
+    public function school_classes()
     {
         return $this->hasMany(SchoolClass::class, 'school_id');
     }

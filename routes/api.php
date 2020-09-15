@@ -5,9 +5,9 @@ use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\SchoolClassController;
 use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\TimetableController;
 use App\Http\Controllers\Api\UserController;
-
-use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +24,7 @@ Route::prefix('user')->group(function () {
     Route::post('refresh', [UserController::class, 'refresh']);
 
     Route::prefix('{obUser}')->group(function () {
-        Route::get('', [UserController::class, 'get'])->middleware('auth.check');
+        Route::get('', [UserController::class, 'get']);
 
         Route::post('delete', [UserController::class, 'delete']);
         Route::post('update', [UserController::class, 'update']);
@@ -83,21 +83,22 @@ Route::prefix('class')->group(function () {
     });
 });
 
-Route::prefix('timetable')->group(function () {
-    Route::get('', [TimetableController::class, 'index']);
+Route::prefix('subject')->group(function () {
+    Route::get('', [SubjectController::class, 'index']);
 
-    Route::post('create', [TimetableController::class, 'create']);
+    Route::post('create', [SubjectController::class, 'create']);
 
-    Route::prefix('{obTimetable}')->group(function () {
-        Route::get('', [TimetableController::class, 'get']);
+    Route::prefix('{obSubject}')->group(function () {
+        Route::get('', [SubjectController::class, 'get']);
 
-        Route::post('update', [TimetableController::class, 'update']);
-        Route::post('delete', [TimetableController::class, 'delete']);
+        Route::post('update', [SubjectController::class, 'update']);
+        Route::post('delete', [SubjectController::class, 'delete']);
     });
 });
 
 Route::prefix('grade')->group(function () {
     Route::get('', [GradeController::class, 'index']);
+    // Route::get('stat', [GradeController::class, 'stat']);
 
     Route::post('create', [GradeController::class, 'create']);
 

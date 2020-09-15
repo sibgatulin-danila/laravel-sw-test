@@ -22,11 +22,11 @@ class SchoolClass extends Model
     
     public function school()
     {
-        return $this->hasOne(School::class, 'school_id');
+        return $this->belongsTo(School::class, 'school_id');
     }
 
     public function timetables()
     {
-        return $this->belongsTo(Timetable::class, 'school_class_id');
+        return $this->hasMany(Timetable::class, 'school_class_id');
     }
 }

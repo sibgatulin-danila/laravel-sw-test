@@ -13,8 +13,8 @@ class Grade extends Model
         'grade', 
         'class', 
         'school_id',
-        'user_id_from',
-        'user_id_to',
+        'user_id',
+        'subject_id',
     ];
     protected $hidden = [
     ];
@@ -23,16 +23,16 @@ class Grade extends Model
 
     public function user_from()
     {
-        return $this->hasOne(User::class, 'user_id_from');
+        return $this->belongsTo(User::class, 'user_id_from');
     }
 
     public function user_to()
     {
-        return $this->hasOne(User::class, 'user_id_to');
+        return $this->belongsTo(User::class, 'user_id_to');
     }
 
-    public function school_id()
+    public function school()
     {
-        return $this->hasOne(School::class, 'school_id');
+        return $this->belongsTo(School::class, 'school_id');
     }
 }
