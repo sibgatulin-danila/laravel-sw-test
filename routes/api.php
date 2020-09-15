@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Http\Request;
@@ -22,5 +23,19 @@ Route::prefix('user')->group(function () {
 
         Route::post('delete', [UserController::class, 'delete']);
         Route::post('update', [UserController::class, 'update']);
+    });
+});
+
+Route::prefix('school')->group(function () {
+    Route::middleware(['auth.check'])->group(function () {
+        Route::get('', [SchoolController::class, 'index']);
+
+        Route::post('/create', [SchoolController::class, 'create'], 201);
+
+        Route::prefix('{obSchool}')->group(function () {
+            Route::get('', [SchoolController::class, 'get']);
+            Route::post('/update', [SchoolController::class, 'update']);
+            Route::post('/delete', [SchoolController::class, 'delete']);
+        });
     });
 });

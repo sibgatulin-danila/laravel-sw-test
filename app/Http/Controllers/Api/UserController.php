@@ -90,19 +90,19 @@ class UserController
             return Response::error(403, 'Login failed');
         }
 
-        $sRefreshToken = HelpersGenerator::refreshToken($obUser);
-        $sRememberToken  = HelpersGenerator::rememberToken($obUser);
+        $sRefreshToken            = HelpersGenerator::refreshToken($obUser);
+        $sRememberToken           = HelpersGenerator::rememberToken($obUser);
         $sRememberTokenExpireDate = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
-        $obUser->remember_token = $sRememberToken;
-        $obUser->refresh_token  = $sRefreshToken;
+        $obUser->remember_token             = $sRememberToken;
+        $obUser->refresh_token              = $sRefreshToken;
         $obUser->remember_token_expire_date = $sRememberTokenExpireDate;
         $obUser->save();
 
         return Response::success([
-            'token_type' => 'bearer',
-            'refresh_token' => $sRefreshToken,
-            'access_token' => $sRememberToken,
+            'token_type'          => 'bearer',
+            'refresh_token'       => $sRefreshToken,
+            'access_token'        => $sRememberToken,
             'access_token_expire' => $sRememberTokenExpireDate,
         ]);
     }
@@ -116,15 +116,16 @@ class UserController
         $sRefreshToken = $obRequest->input('refresh_token');
 
         $obUser = User::whereRefreshToken($obRequest->input('refresh_token'))->first();
-        if ($obUser) {
-            $obUser->remember_token = HelpersGenerator::refreshRememberToken($sRefreshToken);
-            $obUser->remember_token_expire_date = date('Y-m-d H:i:s', strtotime('+24 hours'));
-            $obUser->save();
+        if (!$obUser) {
+            return Response::error(404, 'User does not exist');
         }
+        $obUser->remember_token             = HelpersGenerator::refreshRememberToken($sRefreshToken);
+        $obUser->remember_token_expire_date = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $obUser->save();
 
         return Response::success([
-            'token_type' => 'bearer',
-            'access_token' => $obUser->remember_token,
+            'token_type'          => 'bearer',
+            'access_token'        => $obUser->remember_token,
             'access_token_expire' => $obUser->remember_token_expire_date,
         ]);
     }

@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
-class School extends Authenticatable
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class School extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name', 
         'address', 
