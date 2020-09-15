@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\SchoolClassController;
 use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\StudentController;
@@ -92,5 +93,18 @@ Route::prefix('timetable')->group(function () {
 
         Route::post('update', [TimetableController::class, 'update']);
         Route::post('delete', [TimetableController::class, 'delete']);
+    });
+});
+
+Route::prefix('grade')->group(function () {
+    Route::get('', [GradeController::class, 'index']);
+
+    Route::post('create', [GradeController::class, 'create']);
+
+    Route::prefix('{obGrade}')->group(function () {
+        Route::get('', [GradeController::class, 'get']);
+
+        Route::post('update', [GradeController::class, 'update']);
+        Route::post('delete', [GradeController::class, 'delete']);
     });
 });

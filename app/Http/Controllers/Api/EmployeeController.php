@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\UserType;
-use App\Helpers\Auth;
+
 use App\Helpers\Response;
 
 use App\Models\User;
 
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\Hash;
 
 class EmployeeController
 {

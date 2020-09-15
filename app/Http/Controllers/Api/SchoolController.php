@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
+
 use App\Http\Controllers\Controller;
+
 use App\Http\Middleware\AuthorizationCheck;
+
 use App\Models\School;
 
 use Illuminate\Http\Request;

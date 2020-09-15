@@ -61,4 +61,9 @@ class User extends Authenticatable
             $this->attributes['password'] = Hash::make($sValue);
         }
     }
+
+    public function school_class()
+    {
+        return $this->hasOne(SchoolClass::class, 'school_class_id');
+    }
 }

@@ -20,5 +20,13 @@ class SchoolClass extends Model
     protected $casts = [
     ];
     
+    public function school()
+    {
+        return $this->hasOne(School::class, 'school_id');
+    }
 
+    public function timetables()
+    {
+        return $this->belongsTo(Timetable::class, 'school_class_id');
+    }
 }

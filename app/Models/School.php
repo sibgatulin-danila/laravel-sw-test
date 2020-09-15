@@ -20,8 +20,8 @@ class School extends Model
     protected $casts = [
     ];
 
-    public function students_count()
+    public function classes()
     {
-        return $this->hasMany(User::class, 'school_id');
+        return $this->hasMany(SchoolClass::class, 'school_id');
     }
 }
