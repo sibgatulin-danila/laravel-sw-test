@@ -2,12 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserType;
+
 use App\Helpers\Auth;
 use App\Helpers\Response;
+
 use Closure;
+
 use Illuminate\Http\Request;
 
-class AuthorizationCheck
+class HeadTeacherCheck
 {
     /**
      * Handle an incoming request.
@@ -20,18 +24,10 @@ class AuthorizationCheck
     {
         $sHeaderAuthorization = $obRequest->header('Authorization');
         if (!$sHeaderAuthorization) return Response::error(403, 'bad authorization token');
-
         $obUser = Auth::getUserByBearerToken($sHeaderAuthorization);
-        if ($obUser) {
-            if ($obUser->remember_token_expire_date > date('Y-m-d H:i:s', time())) {
-                return $next($obRequest);
-            } else {
-                $obUser->remember_token = null;
-                $obUser->save();
-
-                return Response::error(403, 'Your access token has expired. To get new access token, make new request on path: "/user/refresh", with post parameter "refresh_token"');
-            }
+        if ($obUser && $obUser->role_id >= UserType::HeadTeacher) {
+            return $next($obRequest);
         }
-        return Response::error(403, 'uthorization failed');
+        return Response::error(401, 'uthorization failed');
     }
 }

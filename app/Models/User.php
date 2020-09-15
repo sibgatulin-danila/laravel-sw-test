@@ -21,10 +21,16 @@ class User extends Authenticatable
         'sex',
         'role_id',
         'birthday',
+        'remember_token_expire_date',
+        'school_id',
 
         // students attributes
-        'school_id',
-        'remember_token_expire_date',
+        'school_class_id',
+        'enrollment_date',
+
+        // employee attribute
+        'dismissal_date',
+        'hire_date',
     ];
     protected $hidden = [
         'password', 

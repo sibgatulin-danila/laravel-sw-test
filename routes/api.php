@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\SchoolClassController;
 use App\Http\Controllers\Api\SchoolController;
+use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Http\Request;
@@ -13,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
     Route::get('', [UserController::class, 'index']);
+
     Route::post('create', [UserController::class, 'create']);
 
     Route::post('login', [UserController::class, 'login']);
@@ -27,15 +31,66 @@ Route::prefix('user')->group(function () {
 });
 
 Route::prefix('school')->group(function () {
-    Route::middleware(['auth.check'])->group(function () {
-        Route::get('', [SchoolController::class, 'index']);
+    Route::get('', [SchoolController::class, 'index']);
 
-        Route::post('/create', [SchoolController::class, 'create'], 201);
+    Route::post('create', [SchoolController::class, 'create'], 201);
 
-        Route::prefix('{obSchool}')->group(function () {
-            Route::get('', [SchoolController::class, 'get']);
-            Route::post('/update', [SchoolController::class, 'update']);
-            Route::post('/delete', [SchoolController::class, 'delete']);
-        });
+    Route::prefix('{obSchool}')->group(function () {
+        Route::get('', [SchoolController::class, 'get']);
+
+        Route::post('update', [SchoolController::class, 'update']);
+        Route::post('delete', [SchoolController::class, 'delete']);
+    });
+});
+
+Route::prefix('employee')->group(function () {
+    Route::get('', [EmployeeController::class, 'index']);
+
+    Route::post('create', [EmployeeController::class, 'create']);
+
+    Route::prefix('{obUser}')->group(function () {
+        Route::get('', [EmployeeController::class, 'get']);
+
+        Route::post('update', [EmployeeController::class, 'update']);
+        Route::post('delete', [EmployeeController::class, 'delete']);
+    });
+});
+
+Route::prefix('student')->group(function () {
+    Route::get('', [StudentController::class, 'index']);
+
+    Route::post('create', [StudentController::class, 'create']);
+
+    Route::prefix('{obUser}')->group(function () {
+        Route::get('', [StudentController::class, 'get']);
+
+        Route::post('update', [StudentController::class, 'update']);
+        Route::post('delete', [StudentController::class, 'delete']);
+    });
+});
+
+Route::prefix('class')->group(function () {
+    Route::get('', [SchoolClassController::class, 'index']);
+
+    Route::post('create', [SchoolClassController::class, 'create']);
+
+    Route::prefix('{obSchoolClass}')->group(function () {
+        Route::get('', [SchoolClassController::class, 'get']);
+
+        Route::post('update', [SchoolClassController::class, 'update']);
+        Route::post('delete', [SchoolClassController::class, 'delete']);
+    });
+});
+
+Route::prefix('timetable')->group(function () {
+    Route::get('', [TimetableController::class, 'index']);
+
+    Route::post('create', [TimetableController::class, 'create']);
+
+    Route::prefix('{obTimetable}')->group(function () {
+        Route::get('', [TimetableController::class, 'get']);
+
+        Route::post('update', [TimetableController::class, 'update']);
+        Route::post('delete', [TimetableController::class, 'delete']);
     });
 });

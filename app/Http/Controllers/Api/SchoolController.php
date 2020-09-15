@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Response;
-
+use App\Http\Controllers\Controller;
+use App\Http\Middleware\AuthorizationCheck;
 use App\Models\School;
 
 use Illuminate\Http\Request;
 
-class SchoolController
+class SchoolController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(AuthorizationCheck::class);
+    }
+
     public function index()
     {
         $arSchools = School::all()->toArray(); 

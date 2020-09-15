@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use App\Models\User;
 
-class Generator 
+class Auth 
 {
     public static function refreshToken($obUser)
     {
@@ -22,5 +22,15 @@ class Generator
         if ($obUser) {
             return self::rememberToken($obUser);
         }
+    }
+
+    public static function getUserByBearerToken($sBearerToken)
+    {
+        $arHeaderAuthorization = explode(' ', $sBearerToken);
+        if (count($arHeaderAuthorization) == 2 && $arHeaderAuthorization[0] === 'Bearer') {
+            return User::whereRememberToken($arHeaderAuthorization[1])->first();
+        } 
+
+        return false;
     }
 }

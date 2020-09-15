@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\Generator as HelpersGenerator;
+use App\Helpers\Auth;
 use App\Helpers\Response;
 
 use App\Models\User;
@@ -45,16 +45,9 @@ class UserController
         ]);
     }
 
-    public function delete(Request $obRequest)
+    public function delete(User $obUser)
     {
-        $obRequest->validate([
-            'id' => 'required',
-        ]);
-
-        $nUserId = $obRequest->input('id');
-
-        User::whereId($nUserId)->delete();
-
+        $obUser->delete();
         Response::success();
     }
 
@@ -90,8 +83,8 @@ class UserController
             return Response::error(403, 'Login failed');
         }
 
-        $sRefreshToken            = HelpersGenerator::refreshToken($obUser);
-        $sRememberToken           = HelpersGenerator::rememberToken($obUser);
+        $sRefreshToken            = Auth::refreshToken($obUser);
+        $sRememberToken           = Auth::rememberToken($obUser);
         $sRememberTokenExpireDate = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
         $obUser->remember_token             = $sRememberToken;
@@ -119,7 +112,7 @@ class UserController
         if (!$obUser) {
             return Response::error(404, 'User does not exist');
         }
-        $obUser->remember_token             = HelpersGenerator::refreshRememberToken($sRefreshToken);
+        $obUser->remember_token             = Auth::refreshRememberToken($sRefreshToken);
         $obUser->remember_token_expire_date = date('Y-m-d H:i:s', strtotime('+24 hours'));
         $obUser->save();
 
