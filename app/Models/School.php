@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
 {
     use HasFactory;
+
+    protected $appends = [
+        'students_count',
+    ];
 
     protected $fillable = [
         'name', 
@@ -19,6 +24,16 @@ class School extends Model
     ];
     protected $casts = [
     ];
+
+    public function getStudentsCountAttribute()
+    {
+        $nSchoolId = $this->id;
+        return User::whereRoleId(UserType::Student)
+            ->whereHas('school_class', function ($obQuery) use ($nSchoolId) {
+                $obQuery->whereSchoolId($nSchoolId);
+            })
+            ->count();
+    }
 
     public function school_classes()
     {

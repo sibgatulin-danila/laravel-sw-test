@@ -24,7 +24,7 @@ class SchoolController extends Controller
     public function index()
     {
         $arSchools = Cache::remember(CacheType::SchoolIndex, Carbon::now()->addMinutes(10), function () {
-            return School::all(); 
+            return School::get(); 
         });
         return Response::success(['items' => $arSchools]);
     }
