@@ -21,10 +21,41 @@ class SubjectController extends Controller
         $this->middleware(AuthorizationCheck::class);
     }
 
-    public function index()
+    public function index(Request $obRequest)
     {
-        $arSubjects = Cache::remember(CacheType::SubjectIndex, Carbon::now()->addMinutes(3), function () {
-            return Subject::get();
+        $obRequest->validate([
+            'school_class_id' => 'required',
+            'datetime' => 'nullable',
+        ]);
+
+        $nSchoolClassId = $obRequest->input('school_class_id', false);
+        $sDateTime = $obRequest->input('datetime', false);
+
+        $sParams = '';
+
+        if ($nSchoolClassId) {
+            $sParams .= $nSchoolClassId;
+        }
+
+        if ($sDateTime) {
+            $sDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $sDateTime);
+            $sParams .= $sDateTime;
+        }
+
+        $sParamHash = md5($sParams);
+
+        $arSubjects = Cache::tags(CacheType::SubjectIndex)->remember($sParamHash, Carbon::now()->addMinutes(3), function () use ($nSchoolClassId, $sDateTime) {
+            Cache::tags(CacheType::SubjectIndex)->flush();
+            return Subject::when($nSchoolClassId, function ($obQuery, $nSchoolClassId) {
+                    $obQuery->whereSchoolClassId($nSchoolClassId);
+                })
+                ->when($sDateTime, function ($obQuery, $sDateTime) {
+                    $obQuery->where([
+                        ['datetime', '>=', $sDateTime->copy()->startOfDay()],
+                        ['datetime', '<=', $sDateTime->copy()->endOfDay()],
+                    ]);
+                })
+                ->get();
         }); 
 
         return Response::success(['items' => $arSubjects]);
@@ -43,7 +74,7 @@ class SubjectController extends Controller
         $obSubject->fill($obRequest->all());
         $obSubject->save();
 
-        Cache::forget(CacheType::SubjectIndex);
+        Cache::tags(CacheType::SubjectIndex)->flush();
         
         return Response::success(['item' => $obSubject], 201);
     }
