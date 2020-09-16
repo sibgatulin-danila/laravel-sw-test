@@ -98,7 +98,7 @@ Route::prefix('subject')->group(function () {
 
 Route::prefix('grade')->group(function () {
     Route::get('', [GradeController::class, 'index']);
-    // Route::get('stat', [GradeController::class, 'stat']);
+    Route::get('stat', [GradeController::class, 'stat']);
 
     Route::post('create', [GradeController::class, 'create']);
 

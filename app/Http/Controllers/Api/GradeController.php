@@ -71,35 +71,34 @@ class GradeController extends Controller
         return Response::success();
     }
 
-    // public function stat(Request $obRequest)
-    // {
-    //     $obRequest->validate([
-    //         'school_id' => 'nullable',
-    //         'class'     => 'nullable',
-    //     ]);
+    public function stat(Request $obRequest)
+    {
+        $obRequest->validate([
+            'school_id' => 'nullable',
+            'class'     => 'nullable',
+        ]);
 
-    //     $nSchoolId = $obRequest->input('school_id', false);
-    //     $nClass = $obRequest->input('class', false);
+        $nSchoolId = $obRequest->input('school_id', false);
+        $nClass = $obRequest->input('class', false);
 
-    //     $arStat = School::when($nSchoolId, function ($obQuery, $nSchoolId) {
-    //             $obQuery->whereId($nSchoolId);
-    //         })
-    //         ->with([
-    //             'school_classes' => function ($obQuery) use ($nClass) {
-    //                 $obQuery->when($nClass, function ($obQuery, $nClass) {
-    //                     $obQuery->whereClass($nClass);
-    //                 });
-    //             }
-    //         ])
-    //         ->get()
-    //         ->map(function ($obItem) {
-    //             foreach ($obItem->school_classes as &$obSchoolClass) {
-    //                 $obSchoolClass->avarage_grade = $obSchoolClass->grades->avg('grade');
-    //             }
+        $arStat = School::when($nSchoolId, function ($obQuery, $nSchoolId) {
+                $obQuery->whereId($nSchoolId);
+            })
+            ->with([
+                'grades' => function ($obQuery) use ($nClass) {
+                    $obQuery->when($nClass, function ($obQuery, $nClass) {
+                        $obQuery->whereClass($nClass);
+                    });
+                },
+            ])
+            ->get()
+            ->map(function ($obItem) {
+                $obItem->avarage_grade = $obItem->grades->avg('grade');
+                return $obItem;
+            });
 
-    //             return $obItem;
-    //         });
+        return Response::success(['items' => $arStat]);
+    }
 
-    //     return Response::success(['items' => $arStat]);
-    // }
+    // private function 
 }

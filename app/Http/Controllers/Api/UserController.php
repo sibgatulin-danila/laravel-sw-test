@@ -79,6 +79,8 @@ class UserController
         $obUser = User::where([
                 ['email', '=', $sEmail],
             ])->first();
+        
+        if (!$obUser) return Response::error(404, 'Invalid credentials');
         if (!Hash::check($sPassword, $obUser->password)) {
             return Response::error(403, 'Login failed');
         }

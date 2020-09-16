@@ -24,9 +24,4 @@ class SchoolClass extends Model
     {
         return $this->belongsTo(School::class, 'school_id');
     }
-
-    public function timetables()
-    {
-        return $this->hasMany(Timetable::class, 'school_class_id');
-    }
 }

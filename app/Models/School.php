@@ -24,4 +24,9 @@ class School extends Model
     {
         return $this->hasMany(SchoolClass::class, 'school_id');
     }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class, 'school_id');
+    }
 }
