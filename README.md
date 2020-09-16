@@ -5,7 +5,7 @@ laravel-sw-test
 
 ### 1. copy './.env.example -> .env'; 
 ### 2. copy '.docker/.env.example -> .docker/.env';
-### 3. В файле ./cronrc.txt сменить доменное имя на имя сервера
+### 3. В файле ./cronrc.txt сменить доменное имя на имя сервера и добавить в кронтаб на сервере этот файл
 ### 4. cd .docker, run terminal command 'docker-compose up -d --build'
 
 ## Войти в консоль ubuntu docker контейнера:
