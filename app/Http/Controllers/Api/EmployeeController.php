@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Enums\UserType;
 
 use App\Helpers\Response;
 
 use App\Models\User;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class EmployeeController
 {
     public function index()
     {
-        $arUsers = User::where([
-                ['role_id', '>', UserType::Student],
-                ['role_id', '<', UserType::Admin],
-            ])
-            ->get(); 
-
+        $arUsers = Cache::remember(CacheType::EmployeeIndex, Carbon::now()->addMinutes(3), function () {
+            return User::where([
+                    ['role_id', '>', UserType::Student],
+                    ['role_id', '<', UserType::Admin],
+                ])
+                ->get();
+        }); 
         return Response::success(['items' => $arUsers]);
     }
 
@@ -48,6 +51,8 @@ class EmployeeController
         }
 
         $obUser->save();
+
+        Cache::forget(CacheType::EmployeeIndex);
 
         return Response::success(['item' => $obUser], 201);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Enums\UserType;
 
 use App\Helpers\Response;
@@ -11,8 +12,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\HeadTeacherCheck;
 
 use App\Models\User;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class StudentController extends Controller
 {
@@ -23,8 +25,10 @@ class StudentController extends Controller
 
     public function index()
     {
-        $arUsers = User::whereRoleId(UserType::Student)
-            ->get(); 
+        $arUsers = Cache::remember(CacheType::StudentIndex, Carbon::now()->addMinutes(10), function () {
+            return User::whereRoleId(UserType::Student)
+                ->get();  
+        });
 
         return Response::success(['items' => $arUsers]);
     }
@@ -51,6 +55,8 @@ class StudentController extends Controller
         }
 
         $obUser->save();
+
+        Cache::forgot(CacheType::StudentIndex);
 
         return Response::success(['item' => $obUser], 201);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Helpers\Response;
 
 use App\Http\Controllers\Controller;
@@ -9,8 +10,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\AuthorizationCheck;
 
 use App\Models\School;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SchoolController extends Controller
 {
@@ -21,8 +23,9 @@ class SchoolController extends Controller
 
     public function index()
     {
-        $arSchools = School::all()->toArray(); 
-
+        $arSchools = Cache::remember(CacheType::SchoolIndex, Carbon::now()->addMinutes(10), function () {
+            return School::all(); 
+        });
         return Response::success(['items' => $arSchools]);
     }
 
@@ -38,6 +41,8 @@ class SchoolController extends Controller
         $obSchool = new School();
         $obSchool->fill($obRequest->all());
         $obSchool->save();
+
+        Cache::forgot(CacheType::SchoolIndex);
 
         return Response::success(['item' => $obSchool], 201);
     }

@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Helpers\Auth;
 use App\Helpers\Response;
 
 use App\Models\User;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserController
 {
     public function index()
     {
-        $arUsers = User::all()->toArray(); 
-
+        $arUsers = Cache::remember(CacheType::UserIndex, Carbon::now()->addMinutes(3), function () {
+            return User::all()->toArray();
+        });
         return Response::success(['items' => $arUsers]);
     }
 
@@ -34,6 +37,8 @@ class UserController
         $obUser = new User();
         $obUser->fill($obRequest->all());
         $obUser->save();
+
+        Cache::forget(CacheType::UserIndex);
 
         return Response::success(['item' => $obUser], 201);
     }

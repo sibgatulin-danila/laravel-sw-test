@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Helpers\Response;
 
 use App\Http\Controllers\Controller;
@@ -10,8 +11,9 @@ use App\Http\Middleware\AuthorizationCheck;
 
 use App\Models\Grade;
 use App\Models\School;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class GradeController extends Controller
 {
@@ -22,7 +24,9 @@ class GradeController extends Controller
 
     public function index()
     {
-        $arGrades = Grade::get(); 
+        $arGrades = Cache::remember(CacheType::GradeIndex, Carbon::now()->addMinutes(3), function () {
+            return Grade::get();
+        });
 
         return Response::success(['items' => $arGrades]);
     }
@@ -40,6 +44,8 @@ class GradeController extends Controller
         $obGrade = new Grade();
         $obGrade->fill($obRequest->all());
         $obGrade->save();
+
+        Cache::forget(CacheType::GradeIndex);
 
         return Response::success(['item' => $obGrade], 201);
     }
@@ -81,24 +87,35 @@ class GradeController extends Controller
         $nSchoolId = $obRequest->input('school_id', false);
         $nClass = $obRequest->input('class', false);
 
-        $arStat = School::when($nSchoolId, function ($obQuery, $nSchoolId) {
-                $obQuery->whereId($nSchoolId);
-            })
-            ->with([
-                'grades' => function ($obQuery) use ($nClass) {
-                    $obQuery->when($nClass, function ($obQuery, $nClass) {
-                        $obQuery->whereClass($nClass);
-                    });
-                },
-            ])
-            ->get()
-            ->map(function ($obItem) {
-                $obItem->avarage_grade = $obItem->grades->avg('grade');
-                return $obItem;
-            });
+        $sParams = '';
+        if ($nSchoolId) {
+            $sParams .= $nSchoolId;
+        }
+        if ($nClass) {
+            $sParams .= $nClass;
+        }
+
+        $sParamsHash = md5($sParams);
+
+        $arStat = Cache::tags(CacheType::GradeStat)->remember($sParamsHash, Carbon::now()->addMinutes(10), function () use ($nSchoolId, $nClass) {
+            Cache::tags(CacheType::GradeStat)->flush();
+            return School::when($nSchoolId, function ($obQuery, $nSchoolId) {
+                    $obQuery->whereId($nSchoolId);
+                })
+                ->with([
+                    'grades' => function ($obQuery) use ($nClass) {
+                        $obQuery->when($nClass, function ($obQuery, $nClass) {
+                            $obQuery->whereClass($nClass);
+                        });
+                    },
+                ])
+                ->get()
+                ->map(function ($obItem) {
+                    $obItem->avarage_grade = $obItem->grades->avg('grade');
+                    return $obItem;
+                });
+        });
 
         return Response::success(['items' => $arStat]);
     }
-
-    // private function 
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\SchoolClassController;
 use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\SubjectController;
-use App\Http\Controllers\Api\TimetableController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Support\Facades\Route;

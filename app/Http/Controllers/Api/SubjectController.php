@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CacheType;
 use App\Helpers\Response;
 
 use App\Http\Controllers\Controller;
@@ -9,8 +10,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\AuthorizationCheck;
 
 use App\Models\Subject;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SubjectController extends Controller
 {
@@ -21,7 +23,9 @@ class SubjectController extends Controller
 
     public function index()
     {
-        $arSubjects = Subject::get(); 
+        $arSubjects = Cache::remember(CacheType::SubjectIndex, Carbon::now()->addMinutes(3), function () {
+            return Subject::get();
+        }); 
 
         return Response::success(['items' => $arSubjects]);
     }
@@ -39,6 +43,8 @@ class SubjectController extends Controller
         $obSubject->fill($obRequest->all());
         $obSubject->save();
 
+        Cache::forget(CacheType::SubjectIndex);
+        
         return Response::success(['item' => $obSubject], 201);
     }
 
