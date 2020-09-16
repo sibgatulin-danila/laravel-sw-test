@@ -36,7 +36,7 @@ class CreateUsersTable extends Migration
                 'email' => 'admin@mail.ru',
                 'name' => 'Админ',
                 'password' => Hash::make('admin'),
-                'role_id' => 'admin',
+                'role_id' => '0',
             ]);
     }
 

@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\SchoolController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\SubjectController;
 use App\Http\Controllers\Api\UserController;
-
+use App\Http\Controllers\Cron\CronController;
 use Illuminate\Support\Facades\Route;
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -108,3 +108,5 @@ Route::prefix('grade')->group(function () {
         Route::post('delete', [GradeController::class, 'delete']);
     });
 });
+
+Route::get('/cron', [CronController::class, 'index']);

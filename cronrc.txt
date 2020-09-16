@@ -1,0 +1,1 @@
+59 23 31 sep * curl http://localhost/api/cron

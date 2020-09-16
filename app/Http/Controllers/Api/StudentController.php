@@ -26,7 +26,10 @@ class StudentController extends Controller
     public function index()
     {
         $arUsers = Cache::remember(CacheType::StudentIndex, Carbon::now()->addMinutes(10), function () {
-            return User::whereRoleId(UserType::Student)
+            return User::whereHas('school_classes', function ($obQuery) {
+                    $obQuery->where('number', '<=', 11);
+                })
+                ->whereRoleId(UserType::Student)
                 ->get();  
         });
 

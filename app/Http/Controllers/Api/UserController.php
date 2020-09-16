@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\CacheType;
+use App\Enums\UserType;
 use App\Helpers\Auth;
 use App\Helpers\Response;
-
+use App\Models\SchoolClass;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

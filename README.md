@@ -5,7 +5,8 @@ laravel-sw-test
 
 ### 1. copy './.env.example -> .env'; 
 ### 2. copy '.docker/.env.example -> .docker/.env';
-### 3. cd .docker, run terminal command 'docker-compose up -d --build'
+### 3. В файле ./cronrc.txt сменить доменное имя на имя сервера
+### 4. cd .docker, run terminal command 'docker-compose up -d --build'
 
 ## Войти в консоль ubuntu docker контейнера:
 
@@ -209,3 +210,6 @@ laravel-sw-test
 ### post /{id}/update - Обновление данных об оценке
 Данные все из перечисленного выше списка атрибутов
 ### post /{id}/delete - Удаление оценки
+
+# Концептуальная модель
+Файл >> model.png
